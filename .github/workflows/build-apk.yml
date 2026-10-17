@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04 # <-- ИСПОЛЬЗУЕМ СТАБИЛЬНУЮ ВЕРСИЮ
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout repository
@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11' # Пробуем более новую версию Python
 
     - name: Install system dependencies
       run: |
@@ -26,6 +26,11 @@ jobs:
     - name: Install Buildozer
       run: |
         pip install --upgrade buildozer Cython==0.29.34 virtualenv
+
+    - name: Clean previous builds
+      run: |
+        rm -rf .buildozer
+        rm -rf bin
 
     - name: Build with Buildozer
       run: |
