@@ -1,20 +1,39 @@
-[app]
-title = UstLugaApp
-package.name = ustlugaapp
-package.domain = org.ustluga
-version = 1.0
-source.dir = .
-source.include_exts = py,png,jpg,kv,atlas,json
+name: Build Kivy APK
 
-# Добавляем jnius и фиксируем Cython
-requirements = python3,kivy==2.3.0,openpyxl,et_xmlfile,jnius>=1.4.0,Cython==0.29.34
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
-android.permissions = android.permission.INTERNET, android.permission.ACCESS_NETWORK_STATE
-android.api = 33
-android.minapi = 21
-android.ndk = 25b
-android.archs = arm64-v8a
-android.accept_sdk_license = True
+jobs:
+  build:
+    runs-on: ubuntu-22.04
 
-[buildozer]
-log_level = 2
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev build-essential libstdc++6 aidl
+
+    - name: Install Buildozer and Cython
+      run: |
+        pip install --upgrade buildozer Cython==0.29.34 virtualenv
+
+    - name: Build with Buildozer
+      run: |
+        buildozer android clean
+        yes | buildozer android debug
+
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: UstLugaApp-APK
+        path: bin/*.apk
