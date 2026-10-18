@@ -6,13 +6,13 @@ version = 1.0
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
 
-# Добавляем jnius и фиксируем Cython
-requirements = python3,kivy==2.3.0,openpyxl,et_xmlfile,jnius>=1.4.0,Cython==0.29.34
+# Только чистый Python
+requirements = python3,kivy==2.3.0,openpyxl,et_xmlfile
 
 android.permissions = android.permission.INTERNET, android.permission.ACCESS_NETWORK_STATE
-android.api = 33
-android.minapi = 21
-android.ndk = 25b
+android.api = 31
+android.minapi = 24
+android.ndk_api = 24
 android.archs = arm64-v8a
 android.accept_sdk_license = True
 
