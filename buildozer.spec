@@ -6,8 +6,8 @@ version = 1.0
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,json
 
-# Только чистый Python
-requirements = python3,kivy==2.3.0,openpyxl,et_xmlfile
+# Явно указываем Python 3.10 и фиксируем Kivy
+requirements = python3==3.10.11,hostpython3==3.10.11,kivy==2.3.1,openpyxl,et_xmlfile
 
 android.permissions = android.permission.INTERNET, android.permission.ACCESS_NETWORK_STATE
 android.api = 31
