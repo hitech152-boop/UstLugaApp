@@ -21,15 +21,35 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev cmake libffi-dev libssl-dev build-essential libstdc++6 aidl
+        sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip \
+          autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev \
+          cmake libffi-dev libssl-dev build-essential libstdc++6
 
     - name: Install Buildozer and Cython
       run: |
         pip install --upgrade buildozer Cython==0.29.34 virtualenv
 
+    # ДОБАВЛЕНО: кеш buildozer для ускорения повторных сборок
+    - name: Cache buildozer global directory
+      uses: actions/cache@v4
+      with:
+        path: ~/.buildozer
+        key: buildozer-global-${{ hashFiles('buildozer.spec') }}
+
+    - name: Cache buildozer project directory
+      uses: actions/cache@v4
+      with:
+        path: .buildozer
+        key: buildozer-project-${{ hashFiles('buildozer.spec') }}
+
+    # ДОБАВЛЕНО: очистка перед сборкой — исключает использование устаревших артефактов
+    - name: Clean Buildozer
+      run: |
+        yes | buildozer android clean
+
     - name: Build with Buildozer
       run: |
-        yes | buildozer android debug
+        yes | buildozer -v android debug
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
